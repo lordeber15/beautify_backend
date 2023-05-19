@@ -2,19 +2,15 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_DEPLOY } = process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-const sequelize = new Sequelize(DB_DEPLOY, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
-// const sequelize = new Sequelize(
-//   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/beautify`,
-//   {
-//     logging: false, // set to console.log to see the raw SQL queries
-//     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-//   }
-// );
+const sequelize = new Sequelize(
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/beautify`,
+  {
+    logging: false, // set to console.log to see the raw SQL queries
+    native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+  }
+);
 const basename = path.basename(__filename);
 // aqui paso eber para dejarles la extencion ajajaa gracias!
 const modelDefiners = [];
@@ -41,6 +37,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 //Creamos relaciones de la bdd
 
+
 const {
   Product,
   Category,
@@ -50,8 +47,9 @@ const {
   Service,
   ShopsDetail,
   Shop,
-  Appointment,
+  Appointment
 } = sequelize.models;
+
 
 //*Relaciones entre los modelos Category y Product
 Category.hasMany(Product);
@@ -70,6 +68,7 @@ Profesional.hasMany(Service);
 //*Relaciones entre modelo Clients y modelo Products a través de Favorites
 Client.belongsToMany(Product, { through: "Favorites" });
 Product.belongsToMany(Client, { through: "Favorites" });
+
 
 //* Relaciones entre Appoinments y Service/ Profesional y Client: un profesional puede tener muchas citas, un cliente puede tener muchas citas y un servicio puede tener muchas citas. A su vez, cada cita pertenece a un profesional, un cliente y un servicio específico.
 Profesional.hasMany(Appointment);
@@ -90,6 +89,7 @@ Shop.hasMany(ShopsDetail);
 //*Relaciones entre Shops y Clients
 Shop.belongsTo(Client);
 Client.hasMany(Shop);
+
 
 module.exports = {
   ...sequelize.models,
