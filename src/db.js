@@ -44,6 +44,7 @@ const {
   ShopsDetail,
   Shop,
   Appointment,
+  Purchase,
 } = sequelize.models;
 
 //*Relaciones entre los modelos Category y Product

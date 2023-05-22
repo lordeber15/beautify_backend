@@ -1,4 +1,5 @@
 const { Shop, ShopsDetail, Product } = require("../../db");
+const sendMailByShop = require("../../config-email/sendMailByShop");
 
 const postNewShop = async (shopData) => {
   //* creamos la compra general y la asociamos con el cliente
@@ -7,7 +8,7 @@ const postNewShop = async (shopData) => {
     discount: shopData.discount,
   });
   newShop.setClient(shopData.clientId);
-
+  
   //* por cada producto comprado creamos un detalle, al que asociamos con la compra general y el producto
   //* lo devolvemos de manera organizada en un nuevo objeto
 
@@ -43,7 +44,8 @@ const postNewShop = async (shopData) => {
     clientId: newShop.ClientId,
     details,
   };
-
+  
+  sendMailByShop(finalShop.clientId,finalShop)
   return finalShop;
 };
 
