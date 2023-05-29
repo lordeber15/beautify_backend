@@ -2,12 +2,15 @@ require("dotenv").config();
 const { Sequelize } = require("sequelize");
 const fs = require("fs");
 const path = require("path");
-const { DB_USER, DB_PASSWORD, DB_HOST, DB_DEPLOY } = process.env;
+const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-const sequelize = new Sequelize(DB_DEPLOY, {
-  logging: false, // set to console.log to see the raw SQL queries
-  native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-});
+const sequelize = new Sequelize(
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/beautify`,
+  {
+    logging: false, // set to console.log to see the raw SQL queries
+    native: false, // lets Sequelize know we can use pg-native for ~30% more speed
+  }
+);
 const basename = path.basename(__filename);
 // aqui paso eber para dejarles la extencion ajajaa gracias!
 const modelDefiners = [];
@@ -45,6 +48,7 @@ const {
   Shop,
   Appointment,
   Purchase,
+  SavedCart,
 } = sequelize.models;
 
 //*Relaciones entre los modelos Category y Product
@@ -60,6 +64,8 @@ Client.hasMany(Comment, { as: "comments" });
 //*Relaciones entre el modelo Service y Profesional
 Service.belongsTo(Profesional);
 Profesional.hasMany(Service);
+Comment.belongsTo(Service);
+Service.hasMany(Comment);
 
 //*Relaciones entre modelo Clients y modelo Products a través de Favorites
 Client.belongsToMany(Product, { through: "Favorites" });
@@ -84,6 +90,13 @@ Shop.hasMany(ShopsDetail);
 //*Relaciones entre Shops y Clients
 Shop.belongsTo(Client);
 Client.hasMany(Shop);
+
+//*Relaciones entre SavedCarts, Clients y Products
+Client.hasOne(SavedCart);
+SavedCart.belongsTo(Client);
+
+SavedCart.belongsToMany(Product, { through: "CartsProducts" });
+Product.belongsToMany(SavedCart, { through: "CartsProducts" });
 
 module.exports = {
   ...sequelize.models,
