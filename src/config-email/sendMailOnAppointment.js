@@ -1,8 +1,7 @@
 
-
 const sendMail = require("./sendMail");
 
-const sendMailByShop = async (name, purchase, email) => {
+const sendMailOnAppointment = async (name, service, appointment, professional, email) => {
 const html = `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -78,38 +77,37 @@ const html = `<!DOCTYPE html>
    
   
   <div class="content">
-  <p>Dear <b>${name} </b>,
+  <p>Dear<b>${name} </b>,
   
-Thank you for your purchase at Beautify! We are excited that you have chosen our online store for your</br> 
-beauty and personal care needs. This email is to confirm the details of your order. Please find all the</br>
-necessary information below:
-</br>
-</br>
-Order Number: #${purchase.id}</br>
-Purchase Date: ${Date()}</br>
-Payment Method: Mercado Pago</br>
-</br>
-</br>
-Order Details:
-</br>
-</br>
-<ul>
-  ${purchase.details.map(each => {
-    return(
-      `<ul>
-      <li>Product: ${each.productName}</li>
-      <li>Quantity: ${each.count}</li>
-      <li>Price: ${each.price}</li>
-      </ul> `
-    )
-  })}
-</ul>
-</br>
-</br>
-Subtotal: ${purchase.amount - purchase.discount}</br>
-discount: ${purchase.discount}</br>
-<b>Total:</b> ${purchase.amount}</br>
+  
+  We are pleased to confirm that we have received and scheduled your appointment at Beautify! 
+  We are excited to provide you with our beauty and wellness services.
+  Below, you will find the details of your appointment: </p>
+  <p>
+  Date and Time: ${appointment.date} at ${appointment.hour}</br>
+  Estimated Duration: ${service.duration}</br>
+  
+  Scheduled Service: ${service.name}</br>
+  Assigned Specialist: ${professional}</br>
+  </p>
+  <p>
+  Please remember that it is important to arrive on time for your appointment so that we can provide you with the best possible service.
+  If you need to cancel or reschedule your appointment, kindly contact us with at least 24 hours 
+  notice so that we can offer that time to other clients.</br>
 
+  At Beautify, we take pride in providing a welcoming and professional environment.
+  Our team of highly trained specialists is ready to assist you and ensure you have an exceptional experience.</br>
+
+  Payment Status: </br>
+    <ul> 
+      <li>If you have already made the advance payment, you do not need to make any further payment on-site. 
+      Your appointment is fully paid, and you only need to show up at the agreed-upon time.</li>
+      <li> If you have not yet made the payment, we would like to remind you that the corresponding amount for the service should be paid upon your visit. 
+      Please ensure you have the exact amount or necessary payment methods available to expedite the process.</li>
+    </ul>
+    </br>
+  If you have any additional questions or require further information, 
+  please do not hesitate to reach out to us. We are here to assist you.
   </div>
   <br>
   <p class="word">Warm regards,,</p>
@@ -125,9 +123,9 @@ discount: ${purchase.discount}</br>
 
   const mail = {
     to: email,
-    subject: ` Purchase Confirmation - Order #${purchase.id}`,
+    subject: `Scheduled Appointment Information - ${service.name} at Beautify`,
     html: html
   };
   sendMail(mail).catch(error => console.log(error))
 };
-module.exports = sendMailByShop
+module.exports = sendMailOnAppointment

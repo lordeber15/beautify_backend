@@ -13,7 +13,7 @@ const getProfesionals = async () => {
       },
     ],
   });
-  console.log(response);
+
   const newResponse = response.map(
     ({ id, fullname, mail, direction, image, Appointments, Services }) => {
       return {
@@ -23,7 +23,7 @@ const getProfesionals = async () => {
         direction,
         image,
         appointments: Appointments,
-        service: Services[0].name,
+        service: Services[0]?.name,
       };
     }
   );

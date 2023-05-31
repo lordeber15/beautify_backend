@@ -2,7 +2,7 @@ const { Purchase, Client } = require("../../db");
 const axios = require("axios");
 require("dotenv");
 const { ACESS_TOKEN, BACK_ROUTE } = process.env;
-
+const sendMailOnPurchase = require('../../config-email/sendMailByShop')
 const approvedFunction = async (id, email) => {
   const response = await axios.get(
     `https://api.mercadopago.com/checkout/preferences/${id}`,
@@ -12,29 +12,30 @@ const approvedFunction = async (id, email) => {
       },
     }
   );
-  const purchase = await Purchase.findAll({ where: {  clientMail: email } });
+  const purchase = await Purchase.findAll({ where: { clientMail: email } });
   purchase.forEach(async (each) => {
     await each.destroy();
   });
   const items = response.data.items;
-console.log('llegué a aprovved')
   let totalAmount = 0;
   let itemsDetails = [];
   const client = await Client.findOne({ where: { email: email } });
   items.forEach(async (product) => {
     totalAmount = totalAmount + product.unit_price;
   });
-  
-  console.log(items)
-  items.forEach((product) => {;
-    if(product.title != 'discount'){
-    itemsDetails.push({
-      price: product.unit_price,
-      count: product.quantity,
-      productId: Number(product.id),
-    })}
+
+  items.forEach((product) => {
+    if (product.title != "discount") {
+      itemsDetails.push({
+        price: product.unit_price,
+        count: product.quantity,
+        productId: Number(product.id),
+      });
+    } else {
+      client.update({ balance: 0 });
+    }
   });
-  
+
   const infoToSend = {
     amount: totalAmount,
     discount: 0,
@@ -46,10 +47,8 @@ console.log('llegué a aprovved')
     `${BACK_ROUTE}/shops`,
     infoToSend
   );
-
-
-
-  return;
+  await sendMailOnPurchase(client.dataValues.fullName, createPurchaseRecords.data, client.dataValues.email)
+  return ;
 };
 
 module.exports = approvedFunction;
