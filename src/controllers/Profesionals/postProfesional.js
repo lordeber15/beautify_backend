@@ -2,6 +2,7 @@ const { Profesional, Service } = require("../../db");
 // name, price, description, image, duration
 const postProfesional = async (fullname, mail, direction, image, service) => {
   fullname = fullname[0].toUpperCase() + fullname.slice(1);
+  console.log(service);
   const newProfesional = await Profesional.create({
     fullname,
     mail,

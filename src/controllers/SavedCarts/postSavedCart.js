@@ -6,7 +6,6 @@ const postSavedCart = async (clientId, products) => {
 
   if (!products.length) return { deleted: true };
 
-
   const newCart = await SavedCart.create();
   await newCart.setClient(clientId);
 

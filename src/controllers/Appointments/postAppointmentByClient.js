@@ -1,5 +1,7 @@
 const { Appointment, Client, Service, Profesional } = require('../../db.js')
+
 const sendMailOnAppointment  = require('../../config-email/sendMailOnAppointment.js')
+
 const createAppointment = async (profesionalId, clientId, serviceId, date, hour, paid) => {
     const appointment = await Appointment.create({
         paid,

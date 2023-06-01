@@ -11,6 +11,7 @@ const findOrCreateClient = async (email, fullName, image, phone, adress) => {
       adress: adress ? adress : null,
     });
     await signUpMail(fullName, client.email)
+
     return client
 }else {
     return client;
