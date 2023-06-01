@@ -104,4 +104,34 @@ router.patch("/unban/:clientId", validateBanClient, async (req, res) => {
   }
 });
 
+router.post("/devolution", validateDevoluton, async (req, res) => {
+  try {
+    const clientData = req.body;
+    const response = await purchaseDevolution(clientData);
+    res.status(200).json(response);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
+router.patch("/ban/:clientId", validateBanClient, async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await banClient(clientId);
+    res.status(200).json(client);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
+router.patch("/unban/:clientId", validateBanClient, async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await unbanClient(clientId);
+    res.status(200).json(client);
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+});
+
 module.exports = router;
