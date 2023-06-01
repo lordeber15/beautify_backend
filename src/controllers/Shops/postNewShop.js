@@ -1,4 +1,5 @@
 const { Shop, ShopsDetail, Product } = require("../../db");
+const sendMailByShop = require("../../config-email/sendMailByShop");
 
 const postNewShop = async (shopData) => {
   //* creamos la compra general y la asociamos con el cliente

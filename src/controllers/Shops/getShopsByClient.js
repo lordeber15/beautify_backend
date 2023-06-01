@@ -14,7 +14,7 @@ const getShopsByClient = async (clientId) => {
       where: { ShopId: generalShop.id },
       include: {
         model: Product,
-        attributes: ["id", "name", "CategoryId"],
+        attributes: ["id", "name", "CategoryId", "image"],
       },
     });
 
@@ -27,11 +27,12 @@ const getShopsByClient = async (clientId) => {
         productName: detail.Product.name,
         price: detail.price,
         count: detail.count,
+        image: detail.Product.image,
       };
 
       //* busca la categoría del producto del detalle y la agrega al objeto de detalle
       categorys.forEach((category) => {
-        if (category.id === detail.CategoryId)
+        if (category.id === detail.Product.CategoryId)
           newDetail.category = category.name;
       });
       return newDetail;
@@ -42,6 +43,7 @@ const getShopsByClient = async (clientId) => {
       id: generalShop.id,
       amount: generalShop.amount,
       discount: generalShop.discount,
+      date: generalShop.createdAt,
       details: newDetails,
     };
 

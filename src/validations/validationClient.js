@@ -1,4 +1,4 @@
-const { Client } = require("../db");
+const { Client, Shop } = require("../db");
 
 const validationSaveClient = async (req, res, next) => {
   try {
@@ -55,9 +55,6 @@ const validateFindOrCreate = async (req, res, next) => {
 
     if (fullName) {
       if (fullName.length > 255) throw new Error("Name's too long");
-      const client = await Client.findOne({ where: { email } });
-      if (client && client.fullName !== fullName)
-        throw new Error("Incorrect name");
     }
 
     if (adress && adress.length > 255) throw new Error("Name's too long");
@@ -70,9 +67,35 @@ const validateFindOrCreate = async (req, res, next) => {
   }
 };
 
+const validateBanClient = async (req, res, next) => {
+  const id = Number(req.params.clientId);
+
+  if (String(id) === "NaN" || id !== Math.floor(id))
+    return res
+      .status(400)
+      .json({ error: "Client Id must be an integer number" });
+
+  const client = await Client.findByPk(id);
+  if (!client) return res.status(400).json({ error: "Client not found" });
+
+  next();
+};
+
+const validateDevoluton = async (req, res, next) => {
+  try {
+    const { shopId } = req.body;
+    const shop = await Shop.findByPk(shopId);
+    if (!shop) throw new Error("Invalid shop id");
+    else next();
+  } catch (error) {
+    res.json({ error: error.message });
+  }
+};
 module.exports = {
   validationSaveClient,
   validationPutClient,
   validateClientExistence,
   validateFindOrCreate,
+  validateDevoluton,
+  validateBanClient,
 };
