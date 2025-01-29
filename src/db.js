@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     ssl: {
       require: true,
       rejectUnauthorized: false,
-    },
+    }
   },
 );
 const basename = path.basename(__filename);
