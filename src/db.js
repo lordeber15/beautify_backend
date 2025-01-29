@@ -14,6 +14,7 @@ const sequelize = new Sequelize(
       require: true,
       rejectUnauthorized: false,
     }
+    }
   },
 );
 const basename = path.basename(__filename);
